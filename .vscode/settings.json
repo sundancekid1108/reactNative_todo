@@ -1,2 +1,6 @@
 {
+    "prettier.jsxBracketSameLine": true,
+    "files.associations": {
+        "*.js":"javascriptreact"
+    }
 }
