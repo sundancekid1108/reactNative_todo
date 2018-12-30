@@ -12,14 +12,43 @@ export default class ToDo extends React.Component{
 
     render(){
         const {isCompleted} = this.state;
+        const {isEditing} = this.state;
+
 
         return(
             <View style={styles.container}>
-                <TouchableOpacity onPress={this._toggleComplete}>
-                    <View style={[styles.circle, isCompleted ? styles.completedCircle : styles.uncompletedCircle]}>
-                    </View>
-                </TouchableOpacity>
-                <Text style= {styles.text}>Hello I'm your To Do</Text>
+                <View style= {styles.column}>
+                    <TouchableOpacity onPress={this._toggleComplete}>
+                        <View style={[styles.circle, isCompleted ? styles.completedCircle : styles.uncompletedCircle]}>
+                        </View>
+                    </TouchableOpacity>
+                    <Text style= {[styles.text, isCompleted ? styles.completedText : styles.uncompletedText]}>
+                        Hello I'm your To Do
+                    </Text>
+                </View>
+                    {isEditing ? 
+                        <View style={styles.actions}>
+                            <TouchableOpacity onPressOut={this._finishEditing}>
+                                <View style={styles.actionContainer}>
+                                    <Text style={styles.actionText}>✅</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View> :
+                        <View style={styles.actions}>
+                            <TouchableOpacity onPressOut={this._startEditing}>
+                                <View style={styles.actionContainer}>
+                                    <Text style={styles.actionText}>✏️</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                                <View style={styles.actionContainer}>
+                                    <Text style={styles.actionText}>❌</Text>
+                                </View>
+                            </TouchableOpacity>
+                        
+                        </View>
+                    }
+                
             </View>
         );
         
@@ -33,6 +62,16 @@ export default class ToDo extends React.Component{
        })
    }
 
+   _startEditing = () => {
+       this.setState({
+           isEditing: true
+       })
+   }
+
+   _finishEditing = () => {
+       this.setState({isEditing: false})
+   }
+
 }
 
 const styles = StyleSheet.create({
@@ -41,7 +80,8 @@ const styles = StyleSheet.create({
         borderBottomColor: "#bbb",
         borderBottomWidth: StyleSheet.hairlineWidth,
         flexDirection: "row",
-        alignItems: "center"
+        alignItems: "center",
+        justifyContent: "space-between"
 
 
     },
@@ -63,5 +103,25 @@ const styles = StyleSheet.create({
     },
     uncompletedCircle: {
         borderColor: "#F23567"
+    },
+    completedText: {
+        color: "#bbb",
+        textDecorationLine: "line-through"
+    },
+    uncompletedText: {
+        color: "black"
+    },
+    column: {
+        flexDirection: "row",
+        alignItems: "center",
+        width: width /2,
+        justifyContent: "space-between"
+    },
+    actions: {
+        flexDirection: "row"
+    },
+    actionContainer: {
+        marginVertical: 15,
+        marginHorizontal: 15
     }
 });
