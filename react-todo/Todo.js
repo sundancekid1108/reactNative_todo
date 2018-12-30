@@ -6,14 +6,17 @@ const { height, width } = Dimensions.get("window")
 
 export default class ToDo extends React.Component{
     state = {
-        isEditing: false
+        isEditing: false,
+        isCompleted: false
     };
 
     render(){
+        const {isCompleted} = this.state;
+
         return(
             <View style={styles.container}>
-                <TouchableOpacity>
-                    <View style={styles.circle}>
+                <TouchableOpacity onPress={this._toggleComplete}>
+                    <View style={[styles.circle, isCompleted ? styles.completedCircle : styles.uncompletedCircle]}>
                     </View>
                 </TouchableOpacity>
                 <Text style= {styles.text}>Hello I'm your To Do</Text>
@@ -21,6 +24,15 @@ export default class ToDo extends React.Component{
         );
         
     }
+
+   _toggleComplete = () => {
+       this.setState(prevState => {
+           return{
+               isCompleted: !prevState.isCompleted
+           }
+       })
+   }
+
 }
 
 const styles = StyleSheet.create({
@@ -42,8 +54,14 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
         borderRadius: 15,
-        borderColor: "red",
+        
         borderWidth: 4,
         marginRight: 20
+    },
+    completedCircle: {
+        borderColor: "#bbb"
+    },
+    uncompletedCircle: {
+        borderColor: "#F23567"
     }
 });
