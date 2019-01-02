@@ -5,11 +5,16 @@ import PropTypes from "prop-types";
 const { height, width } = Dimensions.get("window")
 
 export default class ToDo extends React.Component{
-    
+    constructor(props){
+        super(props)
+        this.state = { isEditing: false, todoValue: props.text}
+    } 
 
     static propTypes = {
         text: PropTypes.string.isRequired,
         isCompleted: PropTypes.bool.isRequired,
+        deleteToDo: PropTypes.func.isRequired,
+        id: PropTypes.string.isRequired
        
       };
     
@@ -22,7 +27,7 @@ export default class ToDo extends React.Component{
     render(){
         const {isCompleted, isEditing, todoValue} = this.state;
         
-        const { text } = this.props;
+        const { text, id, deleteToDo } = this.props;
 
 
         return(
@@ -54,7 +59,7 @@ export default class ToDo extends React.Component{
                                     <Text style={styles.actionText}>✏️</Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPressOut={() => deleteToDo(id) }>
                                 <View style={styles.actionContainer}>
                                     <Text style={styles.actionText}>❌</Text>
                                 </View>
@@ -77,10 +82,10 @@ export default class ToDo extends React.Component{
    }
 
    _startEditing = () => {
-       const {text} = this.props;
+       
        this.setState({
            isEditing: true,
-           todoValue: text
+           
 
        })
    }
