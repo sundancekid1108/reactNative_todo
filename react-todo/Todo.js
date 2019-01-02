@@ -5,17 +5,23 @@ import PropTypes from "prop-types";
 const { height, width } = Dimensions.get("window")
 
 export default class ToDo extends React.Component{
+    
+
+    static propTypes = {
+        text: PropTypes.string.isRequired,
+        isCompleted: PropTypes.bool.isRequired,
+       
+      };
+    
     state = {
         isEditing: false,
-        isCompleted: false,
         todoValue: ""
     };
    
 
     render(){
-        const {isCompleted} = this.state;
-        const {isEditing} = this.state;
-        const {todoValue} = this.state.todoValue;
+        const {isCompleted, isEditing, todoValue} = this.state;
+        
         const { text } = this.props;
 
 
@@ -131,8 +137,8 @@ const styles = StyleSheet.create({
     column: {
         flexDirection: "row",
         alignItems: "center",
-        width: width /2,
-        justifyContent: "space-between"
+        width: width /2
+        
     },
     actions: {
         flexDirection: "row"

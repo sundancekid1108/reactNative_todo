@@ -1,21 +1,37 @@
-import React from 'react';
-import { Platform, StatusBar, StyleSheet, View, Text, Dimensions } from 'react-native';
-import { AppLoading, Asset, Font, Icon } from 'expo';
-import AppNavigator from './navigation/AppNavigator';
-import { TextInput, ScrollView } from 'react-native-gesture-handler';
-import ToDo from "./Todo"
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  TextInput,
+  Dimensions,
+  Platform,
+  ScrollView,
+  AsyncStorage
+} from "react-native";
+import { AppLoading } from "expo";
+import ToDo from "./Todo";
+import uuidv1 from "uuid/v1";
+
 
 const { height, width } = Dimensions.get("window")
 
 export default class App extends React.Component {
-    state= {
-        newToDo: ""
-    };
+    
 
+    state = {
+        newToDo: '',
+        loadedToDos: false,
+        toDos: {}
+      };
   
 
     render() {
-        const { newToDo } = this.state.newToDo;
+        const {newToDo, loadedTodos, toDos} = this.state;
+           
+        console.log(toDos)
+
         return ( 
             <View style = { styles.container }>
                 <StatusBar barStyle = "light-content" / >
@@ -25,23 +41,63 @@ export default class App extends React.Component {
                                 style = { styles.input } 
                                 placeholder = { "New To Do" } 
                                 value = {newToDo}
-                                oneChangeText= {this._controlNewToDo}                        placeholderTextColor= {"#999"}
+                                onChangeText= {this._controlNewToDo}      
+                                placeholderTextColor= {"#999"}
                                 returnKeyType={"done"}
-                                autoCorrect={false} >
-                            </TextInput>
+                                autoCorrect={false}
+                                onSubmitEditing= {this._addToDo}
+                            />
+                            
 
                             <ScrollView contentContainerStyle= {styles.todos}>
-                                <ToDo text= {"Hello I'm To Do"}/>
+                            {Object.values(toDos)
+                                
+                                .map(toDo => (<ToDo key={toDo.id} {...toDo}  />
+                                ))}
                             </ScrollView>
                         </View>
             </View>
         );
+        
+    }
+    _controlNewToDo = text => {
+        
+        this.setState({
+            newToDo: text
+        });
+       
+      };
 
-        _controlNewToDo = text => {
-            this.setState({
-              newToDo: text
-            });
-          };
+    _loadToDos = () => {
+        this.setState({
+            loadedTodos: true
+        })
+    }
+    _addToDo = () => {
+        
+        const { newToDo } = this.state;
+        if (newToDo !== '') {
+            this.setState(prevState => {
+                const ID = uuidv1();
+                const newToDoObject = {
+                    [ID]: {
+                        id: ID,
+                        isCompleted: false,
+                        text: newToDo,
+                        createdAt: Date.now()
+                    } 
+                };
+                const newState = {
+                    ...prevState,
+                    toDos: {
+                        ...prevState.toDos,
+                        ...newToDoObject
+                    },
+                    newToDo: ''
+                };
+                return { ...newState }
+            })
+        };
     }
  
 
