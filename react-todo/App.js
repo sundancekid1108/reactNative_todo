@@ -52,7 +52,14 @@ export default class App extends React.Component {
                             <ScrollView contentContainerStyle= {styles.todos}>
                             {Object.values(toDos)
                                 
-                                .map(toDo => (<ToDo key={toDo.id} {...toDo} deleteToDo={this._deleteToDo}  />
+                                .map(toDo => (<ToDo
+                                    
+                                    key={toDo.id}
+                                    deleteToDo={this._deleteToDo}
+                                    completeToDo={this._completeToDo}
+                                    uncompleteToDo={this._uncompleteToDo}
+                                    updateToDo={this._updateToDo}
+                                    {...toDo}  />
                                 ))}
                             </ScrollView>
                         </View>
@@ -111,7 +118,61 @@ export default class App extends React.Component {
             return {...newState}
         })
     }
- 
+
+
+    /*이전 prevSate값을 newState에 넣음, isCompleted를 false로 수정 
+    */
+    _uncompleteToDo = (id) => {
+        this.setState(prevState => {
+            const newState = {
+                ...prevState,
+                toDos: {
+                    ...prevState.toDos,
+                    [id]: {
+                        ...prevState.toDos[id],
+                        isCompleted: false
+                    }
+                }
+            }
+        return {...newState}
+        })
+    }
+
+    /*이전 prevSate값을 newState에 넣음, isCompleted를 true로 수정 */
+    _completeToDo = (id) => {
+        this.setState(prevState => {
+            const newState = {
+                ...prevState,
+                toDos: {
+                    ...prevState.toDos,
+                    [id]: {
+                        ...prevState.toDos[id],
+                        isCompleted: true
+                    }
+                }
+            }
+        return {...newState}
+        })
+    } 
+
+
+    /*이전값을 가져와서 덮어씀.., text에는 새로운 값을 넣음 */
+
+    _updateToDo = (id, text) => {
+        this.setState(prevState => {
+            const newState = {
+                ...prevState,
+                toDos: {
+                    ...prevState.toDos,
+                    [id]: {
+                        ...prevState.toDos[id],
+                        text: text
+                    }
+                }
+            }
+        return {...newState}
+        })
+    }
 
 }
 
