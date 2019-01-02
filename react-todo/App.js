@@ -30,7 +30,7 @@ export default class App extends React.Component {
     render() {
         const {newToDo, loadedTodos, toDos} = this.state;
            
-        console.log(toDos)
+        
 
         return ( 
             <View style = { styles.container }>
@@ -101,7 +101,8 @@ export default class App extends React.Component {
                         ...newToDoObject
                     },
                     newToDo: ''
-                };
+                }
+                this._saveToDo(newState.toDos)
                 return { ...newState }
             })
         };
@@ -115,6 +116,7 @@ export default class App extends React.Component {
                 ...prevState,
                 ...toDos
             }
+            this._saveToDo(newState.toDos)
             return {...newState}
         })
     }
@@ -134,6 +136,7 @@ export default class App extends React.Component {
                     }
                 }
             }
+        this._saveToDo(newState.toDos)    
         return {...newState}
         })
     }
@@ -151,6 +154,7 @@ export default class App extends React.Component {
                     }
                 }
             }
+        this._saveToDo(newState.toDos)
         return {...newState}
         })
     } 
@@ -170,8 +174,18 @@ export default class App extends React.Component {
                     }
                 }
             }
+        this._saveToDo(newState.toDos)
         return {...newState}
         })
+    }
+
+
+    /*AsyncStorage를 통해 저장, AsyncStorage는 Object는 저장 못하고 string만 저장해서 바꿔줘야됨
+    JSON.stringify로 바꿔줌 */
+
+    _saveToDo = (newToDos) => {
+        //console.log(JSON.stringify(newToDos))
+        const saveToDos = AsyncStorage.setItem("toDos", JSON.stringify(newToDos))
     }
 
 }
