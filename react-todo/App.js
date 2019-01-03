@@ -21,16 +21,22 @@ export default class App extends React.Component {
     
 
     state = {
-        newToDo: '',
+        newToDo: "",
         loadedToDos: false,
         toDos: {}
       };
-  
+   
+    componentDidMount = () => {
+        this._loadToDos()
+      }; 
+
 
     render() {
-        const {newToDo, loadedTodos, toDos} = this.state;
-           
-        
+        const {newToDo, loadedToDos, toDos} = this.state;
+        if (!loadedToDos) {
+            return <AppLoading />;
+          }
+       
 
         return ( 
             <View style = { styles.container }>
@@ -46,12 +52,13 @@ export default class App extends React.Component {
                                 returnKeyType={"done"}
                                 autoCorrect={false}
                                 onSubmitEditing= {this._addToDo}
+                                underlineColorAndroid={"transparent"}
                             />
                             
 
                             <ScrollView contentContainerStyle= {styles.todos}>
                             {Object.values(toDos)
-                                
+                                .reverse()    
                                 .map(toDo => (<ToDo
                                     
                                     key={toDo.id}
@@ -75,11 +82,16 @@ export default class App extends React.Component {
        
       };
 
-    _loadToDos = () => {
-        this.setState({
-            loadedTodos: true
-        })
-    }
+    _loadToDos = async() => {
+        try {
+            const toDos = await AsyncStorage.getItem("toDos");
+            const parsedToDos = JSON.parse(toDos);
+            this.setState({ loadedToDos: true, toDos: parsedToDos || {} });
+          } catch (err) {
+            console.log(err);
+          }
+      }
+      
     _addToDo = () => {
         
         const { newToDo } = this.state;
@@ -105,7 +117,7 @@ export default class App extends React.Component {
                 this._saveToDo(newState.toDos)
                 return { ...newState }
             })
-        };
+        }
     }
 
     _deleteToDo = (id) => {
@@ -168,10 +180,7 @@ export default class App extends React.Component {
                 ...prevState,
                 toDos: {
                     ...prevState.toDos,
-                    [id]: {
-                        ...prevState.toDos[id],
-                        text: text
-                    }
+                    [id]: { ...prevState.toDos[id], text: text }
                 }
             }
         this._saveToDo(newState.toDos)
@@ -179,13 +188,17 @@ export default class App extends React.Component {
         })
     }
 
-
     /*AsyncStorage를 통해 저장, AsyncStorage는 Object는 저장 못하고 string만 저장해서 바꿔줘야됨
     JSON.stringify로 바꿔줌 */
 
-    _saveToDo = (newToDos) => {
-        //console.log(JSON.stringify(newToDos))
-        const saveToDos = AsyncStorage.setItem("toDos", JSON.stringify(newToDos))
+    _saveToDo = newToDos => {
+        console.log(newToDos)
+        const string_newToDos = JSON.stringify(newToDos)
+        const saveToDos = AsyncStorage.setItem('toDos', string_newToDos);
+        const t= AsyncStorage.getItem('toDos')
+        console.log(t)
+        //console.log(saveToDos)
+       
     }
 
 }

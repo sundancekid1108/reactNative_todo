@@ -41,7 +41,11 @@ export default class ToDo extends React.Component{
                         </View>
                     </TouchableOpacity>
                     {isEditing ? ( <TextInput style={[styles.text, styles.input, , isCompleted ? styles.completedText : styles.uncompletedText]} 
-                        value={todoValue} multiline={true} onChangeText={this._controlInput}/>) : 
+                        value={todoValue}
+                        multiline={true}
+                        onChangeText={this._controlInput}
+                        onBlur={this._finishEditing}
+                        underlineColorAndroid={"transparent"}/>) : 
                         (<Text style= {[styles.text, isCompleted ? styles.completedText : styles.uncompletedText]}>
                         {text}
                     </Text>)}
@@ -62,7 +66,10 @@ export default class ToDo extends React.Component{
                                     <Text style={styles.actionText}>✏️</Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity onPressOut={() => deleteToDo(id) }>
+                            <TouchableOpacity onPressOut={(event) => {
+                                event.stopPropagation    
+                                deleteToDo(id)
+                            }}>
                                 <View style={styles.actionContainer}>
                                     <Text style={styles.actionText}>❌</Text>
                                 </View>
@@ -76,7 +83,8 @@ export default class ToDo extends React.Component{
         
     }
 
-   _toggleComplete = () => {
+   _toggleComplete = (event) => {
+       event.stopPropagation()
        const {isCompleted, uncompleteToDo, completeToDo, id} = this.props
        if(isCompleted) {
            uncompleteToDo(id)
@@ -86,7 +94,8 @@ export default class ToDo extends React.Component{
        }
    }
 
-   _startEditing = () => {
+   _startEditing = (event) => {
+        event.stopPropagation()
        
        this.setState({
            isEditing: true,
@@ -95,7 +104,8 @@ export default class ToDo extends React.Component{
        })
    }
 
-   _finishEditing = () => {
+   _finishEditing = (event) => {
+        event.stopPropagation()
        const {todoValue} = this.state
        const {id, updateToDo} = this.props
        updateToDo(id, todoValue)
